@@ -1,50 +1,76 @@
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: azurefile-csi-nfs
-  namespace: kkm
-provisioner: file.csi.azure.com
-allowVolumeExpansion: true
-parameters:
-  protocol: nfs
-mountOptions:
-  - nconnect=4
-  - noresvport
-  - actimeo=30
----
+# ConfigMap for PostgreSQL custom configurations (postgresql.conf and pg_hba.conf)
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
-  namespace: kkm
+  namespace: kkm  
   labels:
     app: postgres
 data:
-  POSTGRES_DB: postgresql
+  postgresql.conf: |
+    # Listen on all interfaces
+    listen_addresses = '*'
+    # Optionally change other settings like max_connections, shared_buffers, etc.
+
+  pg_hba.conf: |
+    # Allow all IPs to connect
+    host    all             all             0.0.0.0/0            md5
+    host    all             all             ::/0                 md5
+---
+# ConfigMap for PostgreSQL credentials (username, password, and database)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-secret
+  namespace: kkm  
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: ps_db
   POSTGRES_USER: admin
   POSTGRES_PASSWORD: mars_postgresql
 ---
+# Persistent Volume definition 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-volume
+  namespace: kkm  
+  labels:
+    type: local
+    app: postgres
+spec:
+  storageClassName: default
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/postgresql
+---
+# Persistent Volume Claim definition 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pv-volume
-  namespace: kkm
+  name: postgres-volume-claim
+  namespace: kkm  
   labels:
     app: postgres
 spec:
-  storageClassName: azurefile-csi-nfs
+  storageClassName: default
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 30Gi
+      storage: 10Gi
 ---
+# Deployment for PostgreSQL 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: kkm
+  namespace: kkm  
 spec:
   replicas: 1
   selector:
@@ -55,39 +81,49 @@ spec:
       labels:
         app: postgres
     spec:
-      initContainers:
-        - name: init
-          image: alpine
-          command: ["sh", "-c", "chown -R 999:1000 /var/lib/postgresql/data"]
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: postgredb
       containers:
         - name: postgres
-          image: postgres:12.20
+          image: postgres:12
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: postgres-config
+                name: postgres-secret  # Reference updated to postgres-secret
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: postgredb
+              name: postgresdata
+            - mountPath: /etc/postgresql/postgresql.conf
+              name: postgres-config
+              subPath: postgresql.conf
+            - mountPath: /etc/postgresql/pg_hba.conf
+              name: postgres-config
+              subPath: pg_hba.conf
       volumes:
-        - name: postgredb
+        - name: postgresdata
           persistentVolumeClaim:
-            claimName: postgres-pv-volume
+            claimName: postgres-volume-claim
+        - name: postgres-config
+          configMap:
+            name: postgres-config
 ---
+# Service definition for PostgreSQL with internal LoadBalancer for Azure
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: kkm
+  namespace: kkm  
+  labels:
+    app: postgres
+  annotations:
+    # For Azure, this annotation ensures the LoadBalancer is internal
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
   selector:
     app: postgres
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432

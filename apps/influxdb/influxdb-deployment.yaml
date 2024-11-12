@@ -2,55 +2,58 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    labels:
-        app: influxdb
-    name: influxdb
+  labels:
+    app: influxdb
+  name: influxdb
+  namespace: kkm 
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: influxdb
-    template:
-        metadata:
-            labels:
-                app: influxdb
-        spec:
-            containers:
-              - image: influxdb:2.0.6
-                name: influxdb
-                ports:
-                  - containerPort: 8086
-                    name: influxdb
-                volumeMounts:
-                  - mountPath: /var/lib/influxdb2
-                    name: data
-            volumes:
-              - name: data
-                persistentVolumeClaim:
-                  claimName: influxdb-data
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+        - image: influxdb:2.7
+          name: influxdb
+          ports:
+            - containerPort: 8086
+              name: influxdb
+          volumeMounts:
+            - mountPath: /var/lib/influxdb2
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: influxdb-data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-    name: influxdb-data
+  name: influxdb-data
+  namespace: kkm  
 spec:
-    accessModes:
-        - ReadWriteOnce
-    resources:
-        requests:
-            storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: influxdb 
-    annotations:
-        service.beta.kubernetes.io/azure-load-balancer-internal: "true" 
+  name: influxdb
+  namespace: kkm 
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
-    ports:
-      - name: influxdb
-        port: 8086
-        targetPort: 8086
-    selector:
-        app: influxdb
-    type: LoadBalancer
+  ports:
+    - name: influxdb
+      port: 8086
+      targetPort: 8086
+  selector:
+    app: influxdb
+  type: LoadBalancer
