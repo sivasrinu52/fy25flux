@@ -74,8 +74,6 @@ kind: Service
 metadata:
   name: grafana
   namespace: kkm
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   ports:
     - port: 3000

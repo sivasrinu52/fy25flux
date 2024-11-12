@@ -47,8 +47,6 @@ kind: Service
 metadata:
   name: influxdb
   namespace: kkm 
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   ports:
     - name: influxdb

@@ -118,9 +118,6 @@ metadata:
   namespace: kkm  
   labels:
     app: postgres
-  annotations:
-    # For Azure, this annotation ensures the LoadBalancer is internal
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   ports:
