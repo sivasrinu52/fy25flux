@@ -12,10 +12,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: litmus-uns
-  valuesFrom:
-    - configMapKeyRef:
-        name: uns-values
-        key: values-acr.yaml
   values:
     imagePullSecrets:
       - name: litmusautomation-uns-centralportal-pull-secret
