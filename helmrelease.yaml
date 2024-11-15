@@ -19,6 +19,6 @@ spec:
       type: LoadBalancer         # Example: Use LoadBalancer for external access
     metrics:
       enabled: true              # Example: Enable Prometheus metrics
-valueFiles:
-    - configMapKeyRef:
-        name: litmus-uns-values  # Name of the ConfigMap    
+valuesFrom:
+    - kind: ConfigMap
+      name: litmus-uns-values   
