@@ -1,0 +1,8 @@
+apiVersion: helm.operator.redhat.com/v1
+kind: HelmRepository
+metadata:
+  name: litmus-uns-repo
+  namespace: uns  
+spec:
+  url: oci://quay.io/litmusautomation/charts
+  secretRef: {}  # If authentication is required, you can specify a secret here
