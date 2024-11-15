@@ -1,16 +1,19 @@
-apiVersion: helm.operator.redhat.com/v1
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: uns
-  namespace: uns
+  namespace: uns  # Namespace for your application
 spec:
   chart:
     spec:
-      chart: litmus-uns  # The name of the chart in the OCI registry
-      version: 1.2.9  # Optionally specify a version if required
-      repo: litmus-uns-repo  # Reference the HelmRepository created earlier
-  values: {}
+      chart: litmus-uns  # Chart name within the OCI registry
+      version: 1.2.9  # Optional: specify a version if needed
+      sourceRef:
+        kind: HelmRepository
+        name: litmus-uns-repo  # Reference the HelmRepository defined earlier
+        namespace: uns # Namespace where the HelmRepository is defined
+  values: {}  # Optional: specify any chart-specific overrides
   releaseName: uns
   namespace: uns
   imagePullSecrets:
-    - name: litmusautomation-uns-centralportal-pull-secret  # Referencing the pre-existing pull secret in AKS
+    - name: litmusautomation-uns-centralportal-pull-secret  # The Secret for pulling container images
