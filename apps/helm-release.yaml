@@ -1,7 +1,6 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: uns
   namespace: uns
 spec:
   releaseName: uns
