@@ -1,0 +1,16 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: uns
+  namespace: uns
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: ./litmus-uns
+      sourceRef:
+        kind: GitRepository
+        name: flux-helm-aks
+        namespace: flux-system
+  values:
+    replicaCount: 1
