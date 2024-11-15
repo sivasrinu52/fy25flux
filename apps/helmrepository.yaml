@@ -1,9 +1,0 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRepository
-metadata:
-  name: litmus-uns-repo
-  namespace: uns  # Namespace where the HelmOperator is running (or your GitOps namespace)
-spec:
-  url: oci://quay.io/litmusautomation/charts
-  secretRef:
-    name: litmusautomation-uns-centralportal-pull-secret  # Referencing the Secret for OCI registry authentication
