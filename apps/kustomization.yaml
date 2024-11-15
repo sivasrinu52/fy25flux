@@ -1,5 +1,12 @@
+# kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: uns
-resources:
-  - litmus-uns
+helmCharts:
+  - name: litmus-uns
+    repo: quay.io/litmusautomation/charts/litmus-uns:1.2.9
+    namespace: uns
+    releaseName: uns
+    version: "1.2.9"  # Replace with your Helm chart version
+    valuesFile: values-acr.yaml
+    setValues:
+      imagePullSecrets[0].name: litmusautomation-uns-centralportal-pull-secret
