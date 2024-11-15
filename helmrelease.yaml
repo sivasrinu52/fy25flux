@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: litmus-uns
+  namespace: uns
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: litmus-uns        # Name of the chart
+      version: 1.2.9           # Specific version of the chart
+      sourceRef:
+        kind: HelmRepository
+        name: litmus-uns-repo
+        namespace: uns
+  values:
+    replicaCount: 1            # Example: Set the number of replicas
+    service:
+      type: LoadBalancer         # Example: Use LoadBalancer for external access
+    metrics:
+      enabled: true              # Example: Enable Prometheus metrics

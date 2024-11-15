@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: litmus-uns-repo
+  namespace: uns
+spec:
+  interval: 1m
+  url: oci://quay.io/litmusautomation/charts/litmus-uns  
+  secretRef:
+    name: litmusautomation-uns-centralportal-pull-secret 
