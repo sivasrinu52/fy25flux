@@ -2,10 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: uns
 resources:
-  - .
+  - ./
 
 helmCharts:
   - name: litmus-uns         # You can use a custom name for the release
+  - chartPath: ./   # Path to the Helm chart directory
   - version: "1.2.9"           # (Optional) Helm chart version
   - releaseName: uns        # Release name
   - valuesFile: values.yaml    # Optional: specify a custom values.yaml file for the chart
