@@ -4,6 +4,6 @@ kind: Kustomization
 helmCharts:
   - name: litmus-uns        
     namespace: uns
-    version: "1.2.9"          
+    version: 1.2.9          
     releaseName: uns        
     valuesFile: values.yaml   
