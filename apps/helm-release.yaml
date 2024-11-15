@@ -1,16 +1,22 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
+  name: uns
   namespace: uns
 spec:
   releaseName: uns
   chart:
     spec:
       chart: litmus-uns
-      version: 1.2.9  # Or specify the exact version you need
+      version: 1.2.9 # Or specify the exact version you need
       sourceRef:
         kind: HelmRepository
         name: litmus-uns
+  valuesFrom:
+    - configMapKeyRef:
+        name: uns-values
+        key: values-acr.yaml
   values:
     imagePullSecrets:
       - name: litmusautomation-uns-centralportal-pull-secret
+  interval: 10s  # Interval added here, adjust as needed
