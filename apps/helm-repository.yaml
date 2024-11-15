@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: litmus-uns
+  namespace: uns
+spec:
+  url: oci://quay.io/litmusautomation/charts
+  interval: 1m0s
