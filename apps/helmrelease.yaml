@@ -1,0 +1,15 @@
+apiVersion: helm.operator.redhat.com/v1
+kind: HelmRelease
+metadata:
+  name: uns
+  namespace: uns
+spec:
+  chart:
+    spec:
+      chart: oci://quay.io/litmusautomation/charts/litmus-uns  # The Helm chart URL
+  values: {}
+  releaseName: uns
+  namespace: uns
+  # Optional: You can directly pass any global settings if necessary
+  imagePullSecrets:
+    - name: litmusautomation-uns-centralportal-pull-secret  # Referencing the pre-existing pull secret in AKS
