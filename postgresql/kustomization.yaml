@@ -1,11 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: kkm
-
 resources:
-  - grafana
-  - postgresql
-  - influxdb
-  - litmus-edge
-  - litmus-uns
-
+  - postgresql-namespace.yaml
+  - acr-secret.yaml
+  - postgresql-deployment.yaml

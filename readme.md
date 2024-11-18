@@ -1,1 +1,1 @@
-gitops flux abcd efghgfvhbjnkml,;.vhgbjnmk;,lfhgjhknlmkdasga
+Edge Deployment using GitOps

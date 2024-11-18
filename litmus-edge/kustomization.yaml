@@ -3,9 +3,6 @@ kind: Kustomization
 namespace: kkm
 
 resources:
-  - grafana
-  - postgresql
-  - influxdb
-  - litmus-edge
-  - litmus-uns
-
+  - litmus-edge-namespace.yml
+  - acr-secret.yml
+  - litmus-edge-deployment.yml
